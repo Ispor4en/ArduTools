@@ -1,0 +1,22 @@
+ArduTools
+Copyright (C) 2026 UnknownTeam
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+ArduTools packages ArduPilot WebTools
+https://github.com/ArduPilot/WebTools
+Copyright the ArduPilot WebTools authors
+Licensed under the GNU General Public License, version 3.
+The upstream license is shipped at upstream/WebTools/LICENSE and, in
+the installed app, under resources/webtools/LICENSE.
+
+Third-party libraries fetched for offline use (Plotly, JsDataflashParser,
+fft.js, Tabulator, Leaflet, and the other packages named in
+scripts/sync-upstream.mjs) keep the license terms in their own
+source trees. Those copies are produced by `npm run sync` and are not
+rewritten by this project.
+
+This product is an independent packaging project by UnknownTeam.
+It is not an official ArduPilot release.

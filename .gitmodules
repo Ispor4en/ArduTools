@@ -1,0 +1,5 @@
+[submodule "upstream/WebTools"]
+	path = upstream/WebTools
+	url = https://github.com/ArduPilot/WebTools.git
+	branch = main
+	ignore = untracked

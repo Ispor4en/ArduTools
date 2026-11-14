@@ -1,0 +1,220 @@
+{
+  "groups": [
+    { "id": "review", "label": "Log review" },
+    { "id": "tuning", "label": "Tuning" },
+    { "id": "planning", "label": "Planning" },
+    { "id": "connect", "label": "Connect" }
+  ],
+  "tools": [
+    {
+      "id": "LogFinder",
+      "name": "Log Finder",
+      "group": "review",
+      "description": "Sort a folder of logs by flight controller and see which parameters changed between flights.",
+      "href": "/LogFinder/",
+      "icon": "/images/LogFinder_Icon.png",
+      "accept": [],
+      "preview": false
+    },
+    {
+      "id": "HardwareReport",
+      "name": "Hardware Report",
+      "group": "review",
+      "description": "Overview of the flight controller, sensors, and parameters from a log or a parameter file.",
+      "href": "/HardwareReport/",
+      "icon": "/images/HardwareReport_Icon.png",
+      "accept": [".param", ".parm", ".bin"],
+      "preview": false
+    },
+    {
+      "id": "StreamStats",
+      "name": "Stream Stats",
+      "group": "review",
+      "description": "Message-rate statistics for DataFlash logs and MAVLink telemetry logs.",
+      "href": "/StreamStats/",
+      "icon": "/images/StreamStats_Icon.png",
+      "accept": [".bin", ".tlog"],
+      "preview": true
+    },
+    {
+      "id": "AILogAnalyzer",
+      "name": "AI Log Analyzer",
+      "group": "review",
+      "description": "Ask questions about a log. The model call needs an API key and a network connection.",
+      "href": "/AILogAnalyzer/",
+      "icon": "/images/AILogAnalyzer_Icon.png",
+      "accept": [".bin", ".log"],
+      "preview": true
+    },
+    {
+      "id": "VideoOverlay",
+      "name": "Video Overlay",
+      "group": "review",
+      "description": "Line a video up with a DataFlash log and export the flight with a telemetry overlay.",
+      "href": "/VideoOverlay/",
+      "icon": "/images/VideoOverlay_Icon.png",
+      "accept": [".bin"],
+      "preview": true
+    },
+    {
+      "id": "MAGFit",
+      "name": "MAGFit",
+      "group": "tuning",
+      "description": "Calibrate the compass from a flight log by fitting it to the world magnetic model.",
+      "href": "/MAGFit/",
+      "icon": "/images/MAGFit_Icon.png",
+      "accept": [".bin"],
+      "preview": false
+    },
+    {
+      "id": "FilterReview",
+      "name": "Filter Review",
+      "group": "tuning",
+      "description": "Inspect gyro noise and try filter changes against a log you have already flown.",
+      "href": "/FilterReview/",
+      "icon": "/images/FilterReview_Icon.png",
+      "accept": [".bin"],
+      "preview": false
+    },
+    {
+      "id": "PIDReview",
+      "name": "PID Review",
+      "group": "tuning",
+      "description": "Review rate and attitude PID tracking in the time domain and the frequency domain.",
+      "href": "/PIDReview/",
+      "icon": "/images/PIDReview_Icon.png",
+      "accept": [".bin"],
+      "preview": false
+    },
+    {
+      "id": "FilterTool",
+      "name": "Filter Tool",
+      "group": "tuning",
+      "description": "Bode plot of gyro low-pass and notch filters loaded from a parameter file.",
+      "href": "/FilterTool/",
+      "icon": "/images/FilterTool_Icon.png",
+      "accept": [".param", ".parm"],
+      "preview": false
+    },
+    {
+      "id": "AirspeedFit",
+      "name": "Airspeed Fit",
+      "group": "tuning",
+      "description": "Estimate ARSPD_RATIO for each airspeed sensor from a flight log.",
+      "href": "/AirspeedFit/",
+      "icon": "/images/AirspeedFit_Icon.png",
+      "accept": [".bin"],
+      "preview": true
+    },
+    {
+      "id": "AnalyticTune",
+      "name": "Analytic Tune",
+      "group": "tuning",
+      "description": "Suggest a multirotor or helicopter tune from system-identification data.",
+      "href": "/AnalyticTune/",
+      "icon": "/images/analytictune_pic.png",
+      "accept": [".bin"],
+      "preview": true
+    },
+    {
+      "id": "ThrustExpo",
+      "name": "Thrust Expo",
+      "group": "tuning",
+      "description": "Fit MOT_THST_EXPO from thrust-stand data so throttle tracks thrust.",
+      "href": "/ThrustExpo/",
+      "icon": "/images/ThrustExpo_Icon.png",
+      "accept": [".param", ".parm", ".txt"],
+      "preview": true
+    },
+    {
+      "id": "KinematicTool",
+      "name": "Kinematic Tool",
+      "group": "planning",
+      "description": "Explore multirotor attitude-control input shaping. A separate tile opens the plane variant.",
+      "href": "/KinematicTool/",
+      "icon": "/images/KinematicTool_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "KinematicToolPlane",
+      "name": "Kinematic Tool (Plane)",
+      "group": "planning",
+      "description": "Fixed-wing input-shaping view of the kinematic tool.",
+      "href": "/KinematicTool/plane/",
+      "icon": "/images/KinematicTool_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "SCurveTool",
+      "name": "SCurve Tool",
+      "group": "planning",
+      "description": "Plot S-curve navigation trajectories from waypoint and speed parameters.",
+      "href": "/SCurveTool/",
+      "icon": "/images/SCurveTool_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "RotationCheck",
+      "name": "Rotation Check",
+      "group": "planning",
+      "description": "Visualize ArduPilot rotation order and sensor orientation.",
+      "href": "/RotationCheck/",
+      "icon": "/images/RotationCheck_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "GeofenceGenerator",
+      "name": "Geofence Generator",
+      "group": "planning",
+      "description": "Build a geofence from OpenStreetMap waterways. The map tiles themselves need a network connection.",
+      "href": "/GeofenceGenerator/",
+      "icon": "/images/GeofenceGenerator_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "SysID",
+      "name": "SysID",
+      "group": "planning",
+      "description": "Fit a state-space or transfer-function model from a flight log. Extra Python packages download on first use when you are online.",
+      "href": "/SysID/",
+      "icon": "/images/sysid_python_stateSpace.png",
+      "accept": [".bin"],
+      "preview": true
+    },
+    {
+      "id": "TelemetryDashboard",
+      "name": "Telemetry Dashboard",
+      "group": "connect",
+      "description": "Live MAVLink displays. Connects to a WebSocket such as Mission Planner on this computer.",
+      "href": "/TelemetryDashboard/",
+      "icon": "/images/TelemetryDashboard_Icon.png",
+      "accept": [".json"],
+      "preview": true
+    },
+    {
+      "id": "SimpleGCS",
+      "name": "Simple GCS",
+      "group": "connect",
+      "description": "A small example ground station for boats, aimed at an autonomous buoy.",
+      "href": "/SimpleGCS/",
+      "icon": "/images/SimpleGCS_Icon.png",
+      "accept": [],
+      "preview": true
+    },
+    {
+      "id": "DFULoader",
+      "name": "DFU Loader",
+      "group": "connect",
+      "description": "Flash an ArduPilot bootloader to a board that is already in USB DFU mode.",
+      "href": "/DFULoader/",
+      "icon": "/images/DFULoader_Icon.png",
+      "accept": [],
+      "preview": false
+    }
+  ]
+}
