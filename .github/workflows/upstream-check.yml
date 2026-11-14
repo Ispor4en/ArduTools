@@ -1,0 +1,46 @@
+name: Upstream WebTools check
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-webtools
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ArduTools and WebTools
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: true
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - name: Compare with ArduPilot WebTools main
+        id: upstream
+        run: node scripts/check-upstream.mjs --apply
+
+      - name: Open a pull request when main has moved
+        if: steps.upstream.outputs.update == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="upstream/webtools-${{ steps.upstream.outputs.short }}"
+          git checkout -b "$branch"
+          git add upstream/WebTools upstream/UPSTREAM.json
+          git commit -m "Update ArduPilot WebTools to ${{ steps.upstream.outputs.short }}"
+          git push -u origin HEAD
+          gh pr create --base main --head "$branch" --title "Update ArduPilot WebTools to ${{ steps.upstream.outputs.short }}" --body-file upstream-pr-body.md || echo "A pull request for this update may already exist."

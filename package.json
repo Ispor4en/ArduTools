@@ -1,0 +1,117 @@
+{
+  "name": "ardutools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ArduTools by UnknownTeam — offline Windows desktop app for ArduPilot WebTools.",
+  "author": "UnknownTeam",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/Ispor4en/ArduTools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ispor4en/ArduTools.git"
+  },
+  "main": "src/main.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-upstream.mjs",
+    "check-upstream": "node scripts/check-upstream.mjs",
+    "start": "electron .",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node --test tests/routing.test.cjs tests/catalog.test.cjs tests/server.test.cjs",
+    "dist": "electron-builder --win nsis --publish never",
+    "dist:dir": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0",
+    "png-to-ico": "^3.0.2"
+  },
+  "build": {
+    "appId": "com.unknownteam.ardutools",
+    "productName": "ArduTools",
+    "copyright": "Copyright (C) 2026 UnknownTeam. ArduPilot WebTools is GPL-3.0 software by its authors.",
+    "asar": true,
+    "npmRebuild": false,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "shared/**/*",
+      "package.json",
+      "LICENSE",
+      "NOTICE"
+    ],
+    "extraResources": [
+      {
+        "from": "shell",
+        "to": "shell",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "shared",
+        "to": "shared",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "upstream/WebTools",
+        "to": "webtools",
+        "filter": [
+          "**/*",
+          "!**/.git",
+          "!**/.git/**",
+          "!**/node_modules/**",
+          "!**/.github/**",
+          "!**/.vscode/**"
+        ]
+      },
+      {
+        "from": "vendor",
+        "to": "vendor",
+        "filter": ["**/*", "!**/.git/**"]
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      },
+      {
+        "from": "upstream/UPSTREAM.json",
+        "to": "UPSTREAM.json"
+      },
+      {
+        "from": "LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "NOTICE",
+        "to": "NOTICE"
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "build/icon.ico",
+      "artifactName": "ArduTools-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ArduTools",
+      "uninstallDisplayName": "ArduTools by UnknownTeam",
+      "license": "LICENSE",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "displayLanguageSelector": true,
+      "installerLanguages": ["en_US", "uk_UA"],
+      "menuCategory": "ArduTools"
+    }
+  }
+}
