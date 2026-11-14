@@ -8,6 +8,7 @@ const path = require('path')
 const { startServer } = require('./server')
 const { installOfflineMirror } = require('./offline-protocol')
 const { runSmoke } = require('./smoke-run')
+const { langFromLocale } = require('../shared/locale')
 
 const SMOKE = process.env.ARDUTOOLS_SMOKE === '1'
 
@@ -73,6 +74,66 @@ function safeExternal(url) {
 
 let mainWindow = null
 let origin = ''
+let uiLang = 'en'
+
+const MENU_TEXT = {
+  en: {
+    file: 'File',
+    open: 'Open file…',
+    home: 'Home',
+    quit: 'Quit',
+    view: 'View',
+    reload: 'Reload',
+    help: 'Help',
+    about: 'About ArduTools',
+    source: 'ArduPilot WebTools source',
+    aboutTitle: 'About ArduTools',
+    aboutMessage: 'ArduTools by UnknownTeam',
+    aboutDetail: 'Version {version}\n\nOffline desktop shell for ArduPilot WebTools.\nWebTools is GPL-3.0 software by the ArduPilot project.\n\nhttps://github.com/ArduPilot/WebTools',
+  },
+  uk: {
+    file: 'Файл',
+    open: 'Відкрити файл…',
+    home: 'Головна',
+    quit: 'Вийти',
+    view: 'Вигляд',
+    reload: 'Оновити',
+    help: 'Довідка',
+    about: 'Про ArduTools',
+    source: 'Вихідний код ArduPilot WebTools',
+    aboutTitle: 'Про ArduTools',
+    aboutMessage: 'ArduTools від UnknownTeam',
+    aboutDetail: 'Версія {version}\n\nОфлайн-оболонка для ArduPilot WebTools.\nWebTools — програмне забезпечення GPL-3.0 проєкту ArduPilot.\n\nhttps://github.com/ArduPilot/WebTools',
+  },
+}
+
+function mt(key) {
+  const pack = MENU_TEXT[uiLang] || MENU_TEXT.en
+  return pack[key] || MENU_TEXT.en[key]
+}
+
+function settingsFile() {
+  return path.join(app.getPath('userData'), 'settings.json')
+}
+
+function readSavedLang() {
+  try {
+    const data = JSON.parse(fs.readFileSync(settingsFile(), 'utf8'))
+    if (data.lang === 'uk' || data.lang === 'en') return data.lang
+  } catch {
+    // No saved choice yet.
+  }
+  return null
+}
+
+function resolveUiLang() {
+  return langFromLocale(app.getLocale(), readSavedLang())
+}
+
+function saveLang(lang) {
+  fs.mkdirSync(path.dirname(settingsFile()), { recursive: true })
+  fs.writeFileSync(settingsFile(), `${JSON.stringify({ lang }, null, 2)}\n`)
+}
 
 function allowDevice(details) {
   return details.deviceType === 'usb' || details.deviceType === 'serial' || details.deviceType === 'hid'
@@ -120,18 +181,18 @@ function buildMenu() {
   }
   return Menu.buildFromTemplate([
     {
-      label: 'File',
+      label: mt('file'),
       submenu: [
-        { label: 'Open file…', accelerator: 'CmdOrCtrl+O', click: () => send('open') },
-        { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => send('home') },
+        { label: mt('open'), accelerator: 'CmdOrCtrl+O', click: () => send('open') },
+        { label: mt('home'), accelerator: 'CmdOrCtrl+Shift+H', click: () => send('home') },
         { type: 'separator' },
-        { role: 'quit' },
+        { role: 'quit', label: mt('quit') },
       ],
     },
     {
-      label: 'View',
+      label: mt('view'),
       submenu: [
-        { label: 'Reload', accelerator: 'CmdOrCtrl+R', click: () => send('reload') },
+        { label: mt('reload'), accelerator: 'CmdOrCtrl+R', click: () => send('reload') },
         { role: 'toggleDevTools' },
         { type: 'separator' },
         { role: 'resetZoom' },
@@ -142,22 +203,22 @@ function buildMenu() {
       ],
     },
     {
-      label: 'Help',
+      label: mt('help'),
       submenu: [
         {
-          label: 'About ArduTools',
+          label: mt('about'),
           click: () => {
             const version = app.getVersion()
             dialog.showMessageBox({
               type: 'info',
-              title: 'About ArduTools',
-              message: 'ArduTools by UnknownTeam',
-              detail: `Version ${version}\n\nOffline desktop shell for ArduPilot WebTools.\nWebTools is GPL-3.0 software by the ArduPilot project.\n\nhttps://github.com/ArduPilot/WebTools`,
+              title: mt('aboutTitle'),
+              message: mt('aboutMessage'),
+              detail: mt('aboutDetail').replace('{version}', version),
             })
           },
         },
         {
-          label: 'ArduPilot WebTools source',
+          label: mt('source'),
           click: () => shell.openExternal('https://github.com/ArduPilot/WebTools'),
         },
       ],
@@ -231,7 +292,16 @@ if (!gotLock) {
 
   app.whenReady().then(() => {
     app.setAppUserModelId('com.unknownteam.ardutools')
+    uiLang = resolveUiLang()
     Menu.setApplicationMenu(buildMenu())
+    ipcMain.handle('lang:get', () => ({ lang: resolveUiLang() }))
+    ipcMain.handle('lang:set', (_event, lang) => {
+      if (lang !== 'uk' && lang !== 'en') return { lang: uiLang }
+      saveLang(lang)
+      uiLang = lang
+      Menu.setApplicationMenu(buildMenu())
+      return { lang: uiLang }
+    })
     ipcMain.handle('shell:open-external', (_event, url) => {
       const safe = safeExternal(url)
       if (safe) return shell.openExternal(safe)

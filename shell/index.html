@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/__shell/styles.css">
 </head>
 <body>
-  <a class="skip" href="#home">Skip to tools</a>
+  <a class="skip" id="skip-link" href="#home">Skip to tools</a>
   <div class="app">
     <aside class="sidebar">
       <header class="brand">
@@ -23,7 +23,7 @@
         </svg>
         <div class="brand-copy">
           <p class="brand-name">ArduTools</p>
-          <p class="brand-by">by UnknownTeam</p>
+          <p class="brand-by" id="brand-by">by UnknownTeam</p>
         </div>
       </header>
       <search>
@@ -34,6 +34,10 @@
       </search>
       <nav id="nav" aria-label="Tools"></nav>
       <footer class="side-foot">
+        <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
+          <button type="button" id="lang-uk" lang="uk" aria-pressed="false">UK</button>
+          <button type="button" id="lang-en" lang="en" aria-pressed="false">EN</button>
+        </div>
         <p id="version-line">GPL-3.0</p>
         <button type="button" id="about-btn">About and license</button>
       </footer>
@@ -51,7 +55,7 @@
       </div>
       <section id="home" aria-labelledby="title">
         <div class="hero">
-          <p class="lede">Offline desktop bundle of ArduPilot WebTools. Logs stay on this computer. Tiles marked Preview are the upstream work-in-progress tools.</p>
+          <p class="lede" id="lede">Offline desktop bundle of ArduPilot WebTools. Logs stay on this computer. Tiles marked Preview are the upstream work-in-progress tools.</p>
         </div>
         <div id="tile-grid" class="tiles"></div>
         <p id="empty" class="empty" hidden>No tools match that search.</p>
@@ -67,22 +71,22 @@
     </main>
   </div>
   <div id="drop" class="drop" hidden>
-    <p>Drop a log or parameter file</p>
+    <p id="drop-title">Drop a log or parameter file</p>
     <p class="drop-sub">.bin, .log, .tlog, .param</p>
   </div>
   <input id="file-picker" type="file" hidden accept=".bin,.log,.param,.parm,.tlog,.txt,.json,.mp4,.mov,.webm,.mkv,.avi,.m4v">
   <dialog id="about">
-    <h2>ArduTools by UnknownTeam</h2>
+    <h2 id="about-heading">ArduTools by UnknownTeam</h2>
     <p id="about-version"></p>
-    <p>ArduTools is a desktop shell around <cite>ArduPilot WebTools</cite>. The tools themselves are GPL-3.0 software by the ArduPilot WebTools authors. This packaging is also GPL-3.0. It is not an official ArduPilot release.</p>
+    <p id="about-body">ArduTools is a desktop shell around <cite>ArduPilot WebTools</cite>. The tools themselves are GPL-3.0 software by the ArduPilot WebTools authors. This packaging is also GPL-3.0. It is not an official ArduPilot release.</p>
     <pre id="notice-text" role="region" aria-label="License notice" tabindex="0"></pre>
-    <form method="dialog"><button type="submit" class="btn primary" value="close">Close</button></form>
+    <form method="dialog"><button type="submit" class="btn primary" id="about-close" value="close">Close</button></form>
   </dialog>
   <dialog id="multi">
-    <h2>Choose a file</h2>
-    <p>Several files were dropped. Pick one to open.</p>
+    <h2 id="multi-heading">Choose a file</h2>
+    <p id="multi-body">Several files were dropped. Pick one to open.</p>
     <div id="multi-list"></div>
-    <form method="dialog"><button type="submit" class="btn" value="cancel">Cancel</button></form>
+    <form method="dialog"><button type="submit" class="btn" id="multi-cancel" value="cancel">Cancel</button></form>
   </dialog>
   <p id="status" class="sr" aria-live="polite"></p>
   <script src="/__shared/routing.js"></script>

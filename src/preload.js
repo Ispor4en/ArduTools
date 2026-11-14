@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld('ardutools', {
   onMenu(callback) {
     ipcRenderer.on('menu:command', (_event, command) => callback(command))
   },
+  getLanguage() {
+    return ipcRenderer.invoke('lang:get')
+  },
+  setLanguage(lang) {
+    return ipcRenderer.invoke('lang:set', lang)
+  },
 })
 
 window.addEventListener('DOMContentLoaded', () => {

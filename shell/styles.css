@@ -203,6 +203,32 @@ search { display: block; padding: 8px 14px 12px; }
   font-size: 0.78rem;
 }
 
+.lang-switch {
+  display: inline-flex;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-switch button {
+  min-width: 42px;
+  padding: 4px 10px;
+  color: var(--muted);
+}
+
+.lang-switch button[aria-pressed="true"] {
+  background: var(--accent);
+  color: oklch(18% 0.03 190);
+  font-weight: 650;
+}
+
+body:not(.i18n-ready) .app,
+body:not(.i18n-ready) .drop,
+body:not(.i18n-ready) dialog {
+  visibility: hidden;
+}
+
 .side-foot p { margin: 0 0 6px; }
 
 .side-foot button {

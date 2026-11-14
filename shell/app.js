@@ -27,25 +27,119 @@ const multiList = document.getElementById('multi-list')
 
 let catalog = []
 let groups = []
+let messages = null
 let current = null
+let currentLang = 'en'
 let openSeq = 0
 let lastFile = null
 let dragDepth = 0
+let metaInfo = {}
 
-const HOME_SUBTITLE = 'Drop a .bin, .log, or .param file anywhere in this window.'
+function t(key, vars) {
+  const table = messages && messages.shell && messages.shell[key]
+  const text = (table && (table[currentLang] || table.en)) || key
+  return String(text).replace(/\{(\w+)\}/g, (_match, name) => (vars && vars[name] != null ? vars[name] : ''))
+}
+
+function toolCopy(tool, field) {
+  const pack = messages && messages.tools && messages.tools[tool.id]
+  const value = pack && pack[field]
+  if (value && (value[currentLang] || value.en)) return value[currentLang] || value.en
+  return tool[field] || tool.name
+}
+
+function groupCopy(group) {
+  const pack = messages && messages.groups && messages.groups[group.id]
+  if (pack && (pack[currentLang] || pack.en)) return pack[currentLang] || pack.en
+  return group.label
+}
+
+function fallbackLang() {
+  const locale = (navigator.language || '').toLowerCase()
+  return locale.startsWith('uk') ? 'uk' : 'en'
+}
+
+function writeLangCookie(lang) {
+  document.cookie = `ardutools_lang=${lang}; Path=/; Max-Age=31536000; SameSite=Lax`
+}
+
+async function setLanguage(lang) {
+  if (lang !== 'uk' && lang !== 'en') return
+  currentLang = lang
+  document.documentElement.lang = lang
+  writeLangCookie(lang)
+  if (window.ardutools && window.ardutools.setLanguage) await window.ardutools.setLanguage(lang)
+  applyChrome()
+  render()
+  if (current) {
+    title.textContent = toolCopy(current, 'name')
+    subtitle.textContent = toolCopy(current, 'description')
+    document.title = `${toolCopy(current, 'name')} · ArduTools`
+    if (iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'ardutools-lang', lang }, location.origin)
+    }
+  }
+  document.body.classList.add('i18n-ready')
+}
+
+function applyChrome() {
+  document.getElementById('skip-link').textContent = t('skip')
+  document.getElementById('brand-by').textContent = t('brandBy')
+  document.getElementById('search').setAttribute('aria-label', t('searchLabel'))
+  document.querySelector('label[for="search"]').textContent = t('searchLabel')
+  search.placeholder = t('searchPlaceholder')
+  nav.setAttribute('aria-label', t('navLabel'))
+  document.getElementById('lang-switch').setAttribute('aria-label', t('langLabel'))
+  document.getElementById('lang-uk').setAttribute('aria-label', t('langUk'))
+  document.getElementById('lang-uk').setAttribute('aria-pressed', currentLang === 'uk' ? 'true' : 'false')
+  document.getElementById('lang-en').setAttribute('aria-label', t('langEn'))
+  document.getElementById('lang-en').setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false')
+  document.getElementById('about-btn').textContent = t('aboutBtn')
+  openBtn.textContent = t('openFile')
+  homeBtn.textContent = t('homeTitle')
+  document.getElementById('lede').textContent = t('lede')
+  empty.textContent = t('empty')
+  document.getElementById('drop-title').textContent = t('dropTitle')
+  iframe.title = t('toolFrame')
+  document.getElementById('about-heading').textContent = t('aboutHeading')
+  document.getElementById('about-body').textContent = t('aboutBody')
+  document.getElementById('notice-text').setAttribute('aria-label', t('noticeLabel'))
+  document.getElementById('about-close').textContent = t('close')
+  document.getElementById('multi-heading').textContent = t('chooseFile')
+  document.getElementById('multi-body').textContent = t('chooseFileBody')
+  document.getElementById('multi-cancel').textContent = t('cancel')
+  document.getElementById('chooser-dismiss').textContent = t('dismiss')
+  const short = (metaInfo.upstream || '').slice(0, 8)
+  document.getElementById('version-line').textContent = `v${metaInfo.version || ''} · GPL-3.0`
+  document.getElementById('about-version').textContent = short
+    ? t('aboutVersion', { version: metaInfo.version || '', short })
+    : t('aboutVersionShort', { version: metaInfo.version || '' })
+  if (!current) {
+    title.textContent = t('homeTitle')
+    subtitle.textContent = t('homeSubtitle')
+    if (!document.hidden) document.title = 'ArduTools'
+  }
+}
 
 async function boot() {
-  const response = await fetch('/__shell/tools.json')
-  const body = await response.json()
-  catalog = body.tools
-  groups = body.groups
+  const [catalogBody, messageBody, metaBody, initial] = await Promise.all([
+    fetch('/__shell/tools.json').then((response) => response.json()),
+    fetch('/__shell/messages.json').then((response) => response.json()),
+    fetch('/__shell/meta.json').then((response) => response.json()).catch(() => ({})),
+    window.ardutools && window.ardutools.getLanguage
+      ? window.ardutools.getLanguage()
+      : Promise.resolve({ lang: fallbackLang() }),
+  ])
+  catalog = catalogBody.tools
+  groups = catalogBody.groups
+  messages = messageBody
+  metaInfo = metaBody
+  currentLang = initial.lang === 'uk' ? 'uk' : 'en'
+  document.documentElement.lang = currentLang
+  writeLangCookie(currentLang)
+  applyChrome()
   render()
-  const meta = await fetch('/__shell/meta.json').then((item) => item.json()).catch(() => ({}))
-  const short = (meta.upstream || '').slice(0, 8)
-  document.getElementById('version-line').textContent = `v${meta.version || ''} · GPL-3.0`
-  document.getElementById('about-version').textContent = short
-    ? `Version ${meta.version}. WebTools ${short}.`
-    : `Version ${meta.version || '1.0.0'}.`
+  document.body.classList.add('i18n-ready')
   window.ardutools.onMenu(onMenu)
   window.ardutools.onOpenPath(({ name, bytes }) => {
     routeFile(new File([bytes], name))
@@ -59,7 +153,7 @@ function render() {
   const homeButton = document.createElement('button')
   homeButton.type = 'button'
   homeButton.className = 'nav-btn'
-  homeButton.textContent = 'All tools'
+  homeButton.textContent = t('allTools')
   if (!current) homeButton.setAttribute('aria-current', 'page')
   homeButton.addEventListener('click', goHome)
   nav.appendChild(homeButton)
@@ -70,7 +164,7 @@ function render() {
     if (!tools.length) continue
     const label = document.createElement('h2')
     label.className = 'group-label'
-    label.textContent = group.label
+    label.textContent = groupCopy(group)
     nav.appendChild(label)
     for (const tool of tools) {
       nav.appendChild(navButton(tool))
@@ -83,7 +177,19 @@ function render() {
 
 function matches(tool, query) {
   if (!query) return true
-  return `${tool.name} ${tool.description} ${tool.group}`.toLowerCase().includes(query)
+  const pack = messages && messages.tools && messages.tools[tool.id]
+  const group = groups.find((item) => item.id === tool.group)
+  const haystack = [
+    tool.name,
+    tool.description,
+    tool.group,
+    pack && pack.name && pack.name.uk,
+    pack && pack.name && pack.name.en,
+    pack && pack.description && pack.description.uk,
+    pack && pack.description && pack.description.en,
+    group && groupCopy({ ...group, id: group.id }),
+  ].filter(Boolean).join(' ').toLowerCase()
+  return haystack.includes(query)
 }
 
 function navButton(tool) {
@@ -97,7 +203,7 @@ function navButton(tool) {
   copy.className = 'nav-copy'
   const name = document.createElement('span')
   name.className = 'nav-name'
-  name.textContent = tool.name
+  name.textContent = toolCopy(tool, 'name')
   copy.append(name)
   button.append(icon, copy)
   button.addEventListener('click', () => openTool(tool.id))
@@ -112,14 +218,14 @@ function tile(tool, eager) {
   if (!eager) icon.loading = 'lazy'
   else icon.setAttribute('fetchpriority', 'high')
   const heading = document.createElement('h2')
-  heading.textContent = tool.name
+  heading.textContent = toolCopy(tool, 'name')
   const text = document.createElement('p')
-  text.textContent = tool.description
+  text.textContent = toolCopy(tool, 'description')
   button.append(icon, heading, text)
   if (tool.preview) {
     const badge = document.createElement('span')
     badge.className = 'badge'
-    badge.textContent = 'Preview'
+    badge.textContent = t('preview')
     button.append(badge)
   }
   button.addEventListener('click', () => openTool(tool.id))
@@ -142,8 +248,8 @@ function goHome() {
   iframe.src = 'about:blank'
   frameWrap.hidden = true
   home.hidden = false
-  title.textContent = 'Home'
-  subtitle.textContent = HOME_SUBTITLE
+  title.textContent = t('homeTitle')
+  subtitle.textContent = t('homeSubtitle')
   document.title = 'ArduTools'
   homeBtn.disabled = true
   hideChooser()
@@ -155,14 +261,14 @@ async function openTool(id, file) {
   if (!tool) return
   const seq = ++openSeq
   current = tool
-  title.textContent = tool.name
-  subtitle.textContent = tool.description
-  document.title = `${tool.name} · ArduTools`
+  title.textContent = toolCopy(tool, 'name')
+  subtitle.textContent = toolCopy(tool, 'description')
+  document.title = `${toolCopy(tool, 'name')} · ArduTools`
   homeBtn.disabled = false
   home.hidden = true
   frameWrap.hidden = false
   render()
-  status.textContent = `Opening ${tool.name}`
+  status.textContent = t('opening', { name: toolCopy(tool, 'name') })
   const loaded = waitForLoad(seq)
   iframe.src = tool.href
   await loaded
@@ -226,11 +332,11 @@ function deliver(file) {
 
 function announce(result, tool, file) {
   if (result.ok) {
-    status.textContent = `${file.name} opened in ${tool.name}`
+    status.textContent = t('openedStatus', { file: file.name, name: toolCopy(tool, 'name') })
     showChooser(file, tool)
     return
   }
-  status.textContent = `${tool.name} has no file field for ${file.name}. Use the controls inside the tool.`
+  status.textContent = t('noField', { file: file.name, name: toolCopy(tool, 'name') })
   showChooser(file, tool, true)
 }
 
@@ -243,14 +349,14 @@ function showChooser(file, tool, failed) {
   }
   chooser.hidden = false
   chooserText.textContent = failed
-    ? `${file.name} did not load in ${tool.name}.`
-    : `${file.name} is open in ${tool.name}.`
+    ? t('noFieldShort', { file: file.name, name: toolCopy(tool, 'name') })
+    : t('openedIn', { file: file.name, name: toolCopy(tool, 'name') })
   chooserActions.replaceChildren()
   for (const alternative of alternatives) {
     const button = document.createElement('button')
     button.type = 'button'
     button.className = 'btn'
-    button.textContent = alternative.name
+    button.textContent = toolCopy(alternative, 'name')
     button.addEventListener('click', () => openTool(alternative.id, file))
     chooserActions.appendChild(button)
   }
@@ -265,9 +371,9 @@ async function routeFile(file) {
   lastFile = file
   const choice = routing.chooseTool(catalog, file.name, current && current.id)
   if (!choice.tool) {
-    status.textContent = `No tool accepts ${file.name}.`
+    status.textContent = t('noTool', { file: file.name })
     chooser.hidden = false
-    chooserText.textContent = `${file.name} does not match a log or parameter tool.`
+    chooserText.textContent = t('noMatch', { file: file.name })
     chooserActions.replaceChildren()
     return
   }
@@ -299,10 +405,12 @@ filePicker.addEventListener('change', () => {
   filePicker.value = ''
 })
 document.getElementById('chooser-dismiss').addEventListener('click', hideChooser)
+document.getElementById('lang-uk').addEventListener('click', () => setLanguage('uk'))
+document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'))
 document.getElementById('about-btn').addEventListener('click', async () => {
   const notice = document.getElementById('notice-text')
   if (!notice.textContent) {
-    notice.textContent = await fetch('/__shell/NOTICE').then((response) => response.text()).catch(() => 'License notice unavailable.')
+    notice.textContent = await fetch('/__shell/NOTICE').then((response) => response.text()).catch(() => t('noticeMissing'))
   }
   about.showModal()
 })
@@ -339,7 +447,7 @@ window.addEventListener('drop', (event) => {
     return entry && entry.isDirectory
   })
   if (directory && !files.length) {
-    status.textContent = 'Log Finder scans a folder from its Search directory button.'
+    status.textContent = t('folderHint')
     openTool('LogFinder')
     return
   }
@@ -400,9 +508,18 @@ window.__ardutoolsSmoke = {
       return false
     }
   },
+  async setLang(lang) {
+    await setLanguage(lang)
+    return document.documentElement.lang
+  },
+  async homeUk() {
+    await setLanguage('uk')
+    goHome()
+    return document.documentElement.lang
+  },
 }
 
 boot().catch((error) => {
-  status.textContent = 'The tool list failed to load.'
+  status.textContent = messages ? t('bootError') : 'The tool list failed to load.'
   console.error(error)
 })
