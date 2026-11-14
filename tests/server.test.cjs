@@ -35,6 +35,7 @@ test('local server serves the shell, a tool, and refuses traversal', async () =>
     assert.equal(tool.status, 200)
     assert.match(toolText, /MAGFit/)
     assert.match(toolText, /window\.alert=function/)
+    assert.match(toolText, /\/__shell\/tool-i18n\.js/)
 
     const meta = await fetch(`${server.origin}/__shell/meta.json`)
     assert.deepEqual(await meta.json(), { version: '1.0.0', upstream: 'abc' })

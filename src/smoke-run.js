@@ -68,6 +68,30 @@ async function runSmoke(win, paths) {
     console.error(JSON.stringify({ failed, fileCount, injected }, null, 2))
     return 1
   }
+  const homeLang = await win.webContents.executeJavaScript('window.__ardutoolsSmoke.homeUk()')
+  await sleep(400)
+  await fs.promises.writeFile(path.join(outDir, 'home-uk.png'), (await win.webContents.capturePage()).toPNG())
+  if (homeLang !== 'uk') {
+    console.error(`Ukrainian home screenshot stayed in ${homeLang}`)
+    return 1
+  }
+  await win.webContents.executeJavaScript(`window.__ardutoolsSmoke.open('MAGFit')`)
+  let calculate = ''
+  const started = Date.now()
+  while (Date.now() - started < 8000) {
+    calculate = await win.webContents.executeJavaScript(`(() => {
+      const doc = document.getElementById('tool').contentDocument
+      const button = doc && doc.getElementById('calculate')
+      return button ? button.value : ''
+    })()`)
+    if (calculate === 'Обчислити') break
+    await sleep(200)
+  }
+  if (calculate !== 'Обчислити') {
+    console.error(`MAGFit Calculate label was ${JSON.stringify(calculate)}`)
+    return 1
+  }
+
   console.log(`Smoke ok: ${results.length} tools, injected file count ${fileCount}`)
   return 0
 }

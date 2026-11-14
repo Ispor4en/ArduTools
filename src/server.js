@@ -9,6 +9,8 @@ const { safeJoin } = require('../shared/safe-path')
 const { contentType } = require('../shared/mime')
 
 const DIALOG_STUB = '<script>window.alert=function(){};window.confirm=function(){return true};window.prompt=function(){return null};</script>'
+const TOOL_I18N = '<script src="/__shell/tool-i18n.js"></script>'
+const TRANSLATED_TOOLS = new Set(['MAGFit', 'FilterReview', 'PIDReview', 'HardwareReport'])
 
 function startServer(options) {
   const server = http.createServer((req, res) => {
@@ -167,15 +169,22 @@ async function sendFile(res, file, head, neutralize, root) {
   const data = await fs.promises.readFile(real)
   const type = contentType(real)
   let body = data
-  if (neutralize && type.startsWith('text/html')) {
-    const html = data.toString('utf8')
-    if (/<head[^>]*>/i.test(html)) {
-      body = Buffer.from(html.replace(/<head[^>]*>/i, (match) => match + DIALOG_STUB), 'utf8')
-    } else {
-      body = Buffer.from(DIALOG_STUB + html, 'utf8')
-    }
+  const translate = wantsToolTranslation(real)
+  if ((neutralize || translate) && type.startsWith('text/html')) {
+    let html = data.toString('utf8')
+    const extra = `${neutralize ? DIALOG_STUB : ''}${translate ? TOOL_I18N : ''}`
+    if (/<head[^>]*>/i.test(html)) html = html.replace(/<head[^>]*>/i, (match) => match + extra)
+    else html = extra + html
+    body = Buffer.from(html, 'utf8')
   }
   send(res, 200, type, body, head)
+}
+
+function wantsToolTranslation(file) {
+  const parts = file.split(path.sep)
+  const name = parts.pop()
+  const dir = parts.pop()
+  return name === 'index.html' && TRANSLATED_TOOLS.has(dir)
 }
 
 function send(res, status, type, body, head) {

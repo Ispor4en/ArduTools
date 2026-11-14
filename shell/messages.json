@@ -1,0 +1,135 @@
+{
+  "shell": {
+    "skip": { "en": "Skip to tools", "uk": "Перейти до інструментів" },
+    "brandBy": { "en": "by UnknownTeam", "uk": "від UnknownTeam" },
+    "searchLabel": { "en": "Find a tool", "uk": "Знайти інструмент" },
+    "searchPlaceholder": { "en": "Find a tool", "uk": "Знайти інструмент" },
+    "navLabel": { "en": "Tools", "uk": "Інструменти" },
+    "allTools": { "en": "All tools", "uk": "Усі інструменти" },
+    "aboutBtn": { "en": "About and license", "uk": "Про програму і ліцензія" },
+    "langLabel": { "en": "Language", "uk": "Мова" },
+    "langUk": { "en": "Ukrainian", "uk": "Українська" },
+    "langEn": { "en": "English", "uk": "Англійська" },
+    "homeTitle": { "en": "Home", "uk": "Головна" },
+    "homeSubtitle": { "en": "Drop a .bin, .log, or .param file anywhere in this window.", "uk": "Перетягніть файл .bin, .log або .param у будь-яке місце цього вікна." },
+    "lede": { "en": "Offline desktop bundle of ArduPilot WebTools. Logs stay on this computer. Tiles marked Preview are the upstream work-in-progress tools.", "uk": "Офлайн-збірка ArduPilot WebTools для робочого столу. Журнали лишаються на цьому комп’ютері. Плитки з позначкою «Чернетка» — це незавершені інструменти upstream." },
+    "openFile": { "en": "Open file", "uk": "Відкрити файл" },
+    "empty": { "en": "No tools match that search.", "uk": "Жоден інструмент не відповідає пошуку." },
+    "preview": { "en": "Preview", "uk": "Чернетка" },
+    "dropTitle": { "en": "Drop a log or parameter file", "uk": "Відпустіть журнал або файл параметрів" },
+    "aboutHeading": { "en": "ArduTools by UnknownTeam", "uk": "ArduTools від UnknownTeam" },
+    "aboutBody": { "en": "ArduTools is a desktop shell around ArduPilot WebTools. The tools themselves are GPL-3.0 software by the ArduPilot WebTools authors. This packaging is also GPL-3.0. It is not an official ArduPilot release.", "uk": "ArduTools — це настільна оболонка навколо ArduPilot WebTools. Самі інструменти — програмне забезпечення GPL-3.0, автори ArduPilot WebTools. Це пакування теж GPL-3.0. Це не офіційний випуск ArduPilot." },
+    "noticeLabel": { "en": "License notice", "uk": "Повідомлення про ліцензію" },
+    "close": { "en": "Close", "uk": "Закрити" },
+    "chooseFile": { "en": "Choose a file", "uk": "Оберіть файл" },
+    "chooseFileBody": { "en": "Several files were dropped. Pick one to open.", "uk": "Перетягнуто кілька файлів. Оберіть один, щоб відкрити." },
+    "cancel": { "en": "Cancel", "uk": "Скасувати" },
+    "dismiss": { "en": "Dismiss", "uk": "Сховати" },
+    "toolFrame": { "en": "ArduPilot tool", "uk": "Інструмент ArduPilot" },
+    "versionLine": { "en": "WebTools {short}.", "uk": "WebTools {short}." },
+    "aboutVersion": { "en": "Version {version}. WebTools {short}.", "uk": "Версія {version}. WebTools {short}." },
+    "aboutVersionShort": { "en": "Version {version}.", "uk": "Версія {version}." },
+    "opening": { "en": "Opening {name}", "uk": "Відкривається {name}" },
+    "openedIn": { "en": "{file} is open in {name}.", "uk": "{file} відкрито в «{name}»." },
+    "openedStatus": { "en": "{file} opened in {name}", "uk": "{file} відкрито в «{name}»" },
+    "noField": { "en": "{name} has no file field for {file}. Use the controls inside the tool.", "uk": "У «{name}» немає поля для {file}. Скористайтеся елементами всередині інструмента." },
+    "noFieldShort": { "en": "{file} did not load in {name}.", "uk": "{file} не завантажився в «{name}»." },
+    "noTool": { "en": "No tool accepts {file}.", "uk": "Жоден інструмент не приймає {file}." },
+    "noMatch": { "en": "{file} does not match a log or parameter tool.", "uk": "{file} не підходить до інструмента журналів чи параметрів." },
+    "folderHint": { "en": "Log Finder scans a folder from its Search directory button.", "uk": "Пошук журналів переглядає теку власною кнопкою Search directory." },
+    "noticeMissing": { "en": "License notice unavailable.", "uk": "Текст повідомлення про ліцензію недоступний." },
+    "bootError": { "en": "The tool list failed to load.", "uk": "Не вдалося завантажити список інструментів." }
+  },
+  "groups": {
+    "review": { "en": "Log review", "uk": "Журнали" },
+    "tuning": { "en": "Tuning", "uk": "Налаштування" },
+    "planning": { "en": "Planning", "uk": "Планування" },
+    "connect": { "en": "Connect", "uk": "Зв’язок" }
+  },
+  "tools": {
+    "LogFinder": {
+      "name": { "en": "Log Finder", "uk": "Пошук журналів" },
+      "description": { "en": "Sort a folder of logs by flight controller and see which parameters changed between flights.", "uk": "Упорядковує теку журналів за польотним контролером і показує, які параметри змінились між польотами." }
+    },
+    "HardwareReport": {
+      "name": { "en": "Hardware Report", "uk": "Звіт про обладнання" },
+      "description": { "en": "Overview of the flight controller, sensors, and parameters from a log or a parameter file.", "uk": "Огляд польотного контролера, сенсорів і параметрів за журналом або файлом параметрів." }
+    },
+    "StreamStats": {
+      "name": { "en": "Stream Stats", "uk": "Статистика потоків" },
+      "description": { "en": "Message-rate statistics for DataFlash logs and MAVLink telemetry logs.", "uk": "Статистика частоти повідомлень для журналів DataFlash і телеметрії MAVLink." }
+    },
+    "AILogAnalyzer": {
+      "name": { "en": "AI Log Analyzer", "uk": "ШІ-аналіз журналу" },
+      "description": { "en": "Ask questions about a log. The model call needs an API key and a network connection.", "uk": "Поставте запитання щодо журналу. Виклик моделі потребує ключа API і мережі." }
+    },
+    "VideoOverlay": {
+      "name": { "en": "Video Overlay", "uk": "Накладання на відео" },
+      "description": { "en": "Line a video up with a DataFlash log and export the flight with a telemetry overlay.", "uk": "Сумістіть відео з журналом DataFlash і експортуйте політ із накладеною телеметрією." }
+    },
+    "MAGFit": {
+      "name": { "en": "MAGFit", "uk": "MAGFit" },
+      "description": { "en": "Calibrate the compass from a flight log by fitting it to the world magnetic model.", "uk": "Відкалібруйте компас за журналом польоту, підігнавши його до моделі магнітного поля Землі." }
+    },
+    "FilterReview": {
+      "name": { "en": "Filter Review", "uk": "Огляд фільтрів" },
+      "description": { "en": "Inspect gyro noise and try filter changes against a log you have already flown.", "uk": "Перегляньте шум гіроскопа і приміряйте інші фільтри на вже записаному журналі." }
+    },
+    "PIDReview": {
+      "name": { "en": "PID Review", "uk": "Огляд PID" },
+      "description": { "en": "Review rate and attitude PID tracking in the time domain and the frequency domain.", "uk": "Огляд відстеження PID кутової швидкості й орієнтації в часі та за частотою." }
+    },
+    "FilterTool": {
+      "name": { "en": "Filter Tool", "uk": "Інструмент фільтрів" },
+      "description": { "en": "Bode plot of gyro low-pass and notch filters loaded from a parameter file.", "uk": "Діаграма Боде фільтрів низьких частот і режекторів гіроскопа з файла параметрів." }
+    },
+    "AirspeedFit": {
+      "name": { "en": "Airspeed Fit", "uk": "Підгонка повітряної швидкості" },
+      "description": { "en": "Estimate ARSPD_RATIO for each airspeed sensor from a flight log.", "uk": "Оцініть ARSPD_RATIO для кожного датчика повітряної швидкості за журналом польоту." }
+    },
+    "AnalyticTune": {
+      "name": { "en": "Analytic Tune", "uk": "Аналітичне налаштування" },
+      "description": { "en": "Suggest a multirotor or helicopter tune from system-identification data.", "uk": "Пропозиція налаштування мультиротора або гелікоптера за даними ідентифікації системи." }
+    },
+    "ThrustExpo": {
+      "name": { "en": "Thrust Expo", "uk": "Експонента тяги" },
+      "description": { "en": "Fit MOT_THST_EXPO from thrust-stand data so throttle tracks thrust.", "uk": "Підгонка MOT_THST_EXPO за даними стенда тяги, щоб газ відповідав тязі." }
+    },
+    "KinematicTool": {
+      "name": { "en": "Kinematic Tool", "uk": "Кінематичний інструмент" },
+      "description": { "en": "Explore multirotor attitude-control input shaping. A separate tile opens the plane variant.", "uk": "Дослідіть формування вхідного сигналу керування орієнтацією мультиротора. Окремою плиткою відкривається варіант для літака." }
+    },
+    "KinematicToolPlane": {
+      "name": { "en": "Kinematic Tool (Plane)", "uk": "Кінематичний інструмент (літак)" },
+      "description": { "en": "Fixed-wing input-shaping view of the kinematic tool.", "uk": "Варіант кінематичного інструмента для літака зі звичайним крилом." }
+    },
+    "SCurveTool": {
+      "name": { "en": "SCurve Tool", "uk": "Інструмент S-кривої" },
+      "description": { "en": "Plot S-curve navigation trajectories from waypoint and speed parameters.", "uk": "Траєкторії S-кривої за параметрами точок маршруту і швидкості." }
+    },
+    "RotationCheck": {
+      "name": { "en": "Rotation Check", "uk": "Перевірка обертання" },
+      "description": { "en": "Visualize ArduPilot rotation order and sensor orientation.", "uk": "Наочно показати порядок обертання ArduPilot і орієнтацію сенсорів." }
+    },
+    "GeofenceGenerator": {
+      "name": { "en": "Geofence Generator", "uk": "Генератор геозони" },
+      "description": { "en": "Build a geofence from OpenStreetMap waterways. The map tiles themselves need a network connection.", "uk": "Побудувати геозону за водними шляхами OpenStreetMap. Тайли карти потребують мережі." }
+    },
+    "SysID": {
+      "name": { "en": "SysID", "uk": "SysID" },
+      "description": { "en": "Fit a state-space or transfer-function model from a flight log. Extra Python packages download on first use when you are online.", "uk": "Підігнати модель у просторі станів або передавальну функцію за журналом польоту. Додаткові пакети Python завантажуються під час першого запуску, якщо є мережа." }
+    },
+    "TelemetryDashboard": {
+      "name": { "en": "Telemetry Dashboard", "uk": "Панель телеметрії" },
+      "description": { "en": "Live MAVLink displays. Connects to a WebSocket such as Mission Planner on this computer.", "uk": "Живі індикатори MAVLink. Підключається до WebSocket, наприклад Mission Planner на цьому комп’ютері." }
+    },
+    "SimpleGCS": {
+      "name": { "en": "Simple GCS", "uk": "Проста наземна станція" },
+      "description": { "en": "A small example ground station for boats, aimed at an autonomous buoy.", "uk": "Невеликий приклад наземної станції для човнів, розрахований на автономний буй." }
+    },
+    "DFULoader": {
+      "name": { "en": "DFU Loader", "uk": "Завантажувач DFU" },
+      "description": { "en": "Flash an ArduPilot bootloader to a board that is already in USB DFU mode.", "uk": "Запис завантажувача ArduPilot на плату, яка вже в режимі USB DFU." }
+    }
+  }
+}

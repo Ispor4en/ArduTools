@@ -10,12 +10,12 @@ The tools run on this computer. A flight log opened in ArduTools is not uploaded
 
 ## Download and install
 
-The Windows installer is attached to [GitHub Releases](https://github.com/Ispor4en/ArduTools/releases). For 1.0.0 the file is:
+The Windows installer is attached to [GitHub Releases](https://github.com/Ispor4en/ArduTools/releases). For 1.1.0 the file is:
 
-[ArduTools-Setup-1.0.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.0.0/ArduTools-Setup-1.0.0.exe)
+[ArduTools-Setup-1.1.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.1.0/ArduTools-Setup-1.1.0.exe)
 
-1. Download `ArduTools-Setup-1.0.0.exe`.
-2. Run the installer. It is not code-signed, so Windows SmartScreen may ask you to choose **More info** and then **Run anyway**.
+1. Download `ArduTools-Setup-1.1.0.exe`.
+2. Run the installer. It is not code-signed, so Windows SmartScreen may ask you to choose **More info** and then **Run anyway**. The installer asks for a language and preselects Ukrainian when the Windows display language is Ukrainian, otherwise English. The NSIS pages (folder, shortcuts, uninstall) follow that choice.
 3. Choose an install folder if you want one. The default is a per-user install.
 4. Leave **Desktop shortcut** and **Start Menu shortcut** selected. The shortcut name is **ArduTools**.
 5. Open **ArduTools** from the desktop or the Start Menu.
@@ -24,7 +24,9 @@ To remove it, use **Settings → Apps → ArduTools by UnknownTeam**, or the uni
 
 ## Using the app
 
-The home screen is a tile for every tool shipped in ArduPilot WebTools `main`, including the upstream work-in-progress tools (marked **Preview**). The sidebar switches tools without leaving the app. **File → Open file** and the **Open file** button use the normal Windows file picker.
+The home screen is a tile for every tool shipped in ArduPilot WebTools `main`, including the upstream work-in-progress tools (marked **Preview** / **Чернетка**). The sidebar switches tools without leaving the app. **File → Open file** and the **Open file** button use the normal Windows file picker.
+
+The shell is in English or Ukrainian. **UK** and **EN** in the sidebar switch the language and remember the choice. On a new install, Ukrainian Windows (`uk` / `uk-UA`) opens in Ukrainian; every other locale opens in English. MAGFit, Filter Review, PID Review, and Hardware Report also get a light label translation (buttons, section titles, legends) injected at runtime. The upstream files are not edited, so a WebTools sync does not drop the translation. Longer instructions and the other tools stay in the upstream language.
 
 Drop a file anywhere on the window:
 
@@ -86,7 +88,7 @@ On Windows, the installer is:
 npm run dist
 ```
 
-The setup program is written to `dist/ArduTools-Setup-1.0.0.exe`.
+The setup program is written to `dist/ArduTools-Setup-1.1.0.exe`.
 
 Checks:
 
@@ -129,12 +131,12 @@ ArduTools від UnknownTeam — це офлайн-застосунок Windows 
 
 ## Завантаження та встановлення
 
-Інсталятор Windows додається до [релізів на GitHub](https://github.com/Ispor4en/ArduTools/releases). Для версії 1.0.0 це файл:
+Інсталятор Windows додається до [релізів на GitHub](https://github.com/Ispor4en/ArduTools/releases). Для версії 1.1.0 це файл:
 
-[ArduTools-Setup-1.0.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.0.0/ArduTools-Setup-1.0.0.exe)
+[ArduTools-Setup-1.1.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.1.0/ArduTools-Setup-1.1.0.exe)
 
-1. Завантажте `ArduTools-Setup-1.0.0.exe`.
-2. Запустіть інсталятор. Файл не підписаний цифровим підписом, тож SmartScreen може попросити натиснути **Докладніше**, а потім **Виконати попри це**.
+1. Завантажте `ArduTools-Setup-1.1.0.exe`.
+2. Запустіть інсталятор. Файл не підписаний цифровим підписом, тож SmartScreen може попросити натиснути **Докладніше**, а потім **Виконати попри це**. Інсталятор запитує мову і наперед обирає українську, якщо мова Windows — українська; інакше англійську. Сторінки NSIS (тека, ярлики, видалення) показуються цією мовою.
 3. За бажанням оберіть теку встановлення. Типово програма ставиться для поточного користувача.
 4. Залиште позначки ярлика на робочому столі та в меню «Пуск». Назва ярлика — **ArduTools**.
 5. Відкрийте **ArduTools** з робочого столу або меню «Пуск».
@@ -143,7 +145,11 @@ ArduTools від UnknownTeam — це офлайн-застосунок Windows 
 
 ## Як користуватися
 
-На домашньому екрані є плитка кожного інструмента з гілки `main` ArduPilot WebTools, разом із незавершеними інструментами upstream (позначка **Preview**). Бічна панель перемикає інструменти, не закриваючи застосунок. **File → Open file** і кнопка **Open file** відкривають звичайне вікно вибору файла Windows.
+На домашньому екрані є плитка кожного інструмента з гілки `main` ArduPilot WebTools, разом із незавершеними інструментами upstream (позначка **Preview** / **Чернетка**). Бічна панель перемикає інструменти, не закриваючи застосунок. **Файл → Відкрити файл** і кнопка **Відкрити файл** відкривають звичайне вікно вибору файла Windows.
+
+Оболонка українською або англійською. Кнопки **UK** і **EN** у бічній панелі перемикають мову і запам’ятовують вибір. На новій установці українська Windows (`uk` / `uk-UA`) відкривається українською; будь-яка інша локаль — англійською. MAGFit, Огляд фільтрів, Огляд PID і Звіт про обладнання додатково отримують легкий переклад підписів (кнопки, заголовки розділів, групи полів). Його вставлено під час показу сторінки, файли upstream не змінюються, тож синхронізація WebTools переклад не затирає. Довгі пояснення та решта інструментів лишаються мовою upstream.
+
+![Український домашній екран](docs/screenshots/home-uk.png)
 
 Перетягніть файл у будь-яке місце вікна:
 
@@ -205,7 +211,7 @@ npm start
 npm run dist
 ```
 
-Програма встановлення з’являється як `dist/ArduTools-Setup-1.0.0.exe`.
+Програма встановлення з’являється як `dist/ArduTools-Setup-1.1.0.exe`.
 
 Перевірки:
 
