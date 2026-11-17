@@ -10,11 +10,11 @@ The tools run on this computer. A flight log opened in ArduTools is not uploaded
 
 ## Download and install
 
-The Windows installer is attached to [GitHub Releases](https://github.com/Ispor4en/ArduTools/releases). For 1.1.0 the file is:
+The Windows installer is attached to [GitHub Releases](https://github.com/Ispor4en/ArduTools/releases). For 1.2.0 the file is:
 
-[ArduTools-Setup-1.1.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.1.0/ArduTools-Setup-1.1.0.exe)
+[ArduTools-Setup-1.2.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.2.0/ArduTools-Setup-1.2.0.exe)
 
-1. Download `ArduTools-Setup-1.1.0.exe`.
+1. Download `ArduTools-Setup-1.2.0.exe`.
 2. Run the installer. It is not code-signed, so Windows SmartScreen may ask you to choose **More info** and then **Run anyway**. The installer asks for a language and preselects Ukrainian when the Windows display language is Ukrainian, otherwise English. The NSIS pages (folder, shortcuts, uninstall) follow that choice.
 3. Choose an install folder if you want one. The default is a per-user install.
 4. Leave **Desktop shortcut** and **Start Menu shortcut** selected. The shortcut name is **ArduTools**.
@@ -88,7 +88,14 @@ On Windows, the installer is:
 npm run dist
 ```
 
-The setup program is written to `dist/ArduTools-Setup-1.1.0.exe`.
+The setup program is written to `dist/ArduTools-Setup-1.2.0.exe`.
+
+## Keyboard
+
+- **Arrow keys** move through the sidebar list and, separately, through the tool tiles.
+- **Enter** opens the focused tool.
+- **/** or **Ctrl+K** focuses the tool search. Typing filters the list and the tiles.
+- **Esc** clears the search, or leaves the open tool and returns focus to the tile you opened.
 
 Checks:
 
@@ -131,11 +138,11 @@ ArduTools від UnknownTeam — це офлайн-застосунок Windows 
 
 ## Завантаження та встановлення
 
-Інсталятор Windows додається до [релізів на GitHub](https://github.com/Ispor4en/ArduTools/releases). Для версії 1.1.0 це файл:
+Інсталятор Windows додається до [релізів на GitHub](https://github.com/Ispor4en/ArduTools/releases). Для версії 1.2.0 це файл:
 
-[ArduTools-Setup-1.1.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.1.0/ArduTools-Setup-1.1.0.exe)
+[ArduTools-Setup-1.2.0.exe](https://github.com/Ispor4en/ArduTools/releases/download/v1.2.0/ArduTools-Setup-1.2.0.exe)
 
-1. Завантажте `ArduTools-Setup-1.1.0.exe`.
+1. Завантажте `ArduTools-Setup-1.2.0.exe`.
 2. Запустіть інсталятор. Файл не підписаний цифровим підписом, тож SmartScreen може попросити натиснути **Докладніше**, а потім **Виконати попри це**. Інсталятор запитує мову і наперед обирає українську, якщо мова Windows — українська; інакше англійську. Сторінки NSIS (тека, ярлики, видалення) показуються цією мовою.
 3. За бажанням оберіть теку встановлення. Типово програма ставиться для поточного користувача.
 4. Залиште позначки ярлика на робочому столі та в меню «Пуск». Назва ярлика — **ArduTools**.
@@ -211,7 +218,14 @@ npm start
 npm run dist
 ```
 
-Програма встановлення з’являється як `dist/ArduTools-Setup-1.1.0.exe`.
+Програма встановлення з’являється як `dist/ArduTools-Setup-1.2.0.exe`.
+
+## Клавіатура
+
+- **Стрілки** рухають фокус списком у бічній панелі і, окремо, сіткою плиток.
+- **Enter** відкриває інструмент у фокусі.
+- **/** або **Ctrl+K** ставить курсор у пошук. Текст звужує список і плитки.
+- **Esc** очищає пошук або закриває відкритий інструмент і повертає фокус на його плитку.
 
 Перевірки:
 

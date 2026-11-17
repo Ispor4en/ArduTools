@@ -5,6 +5,8 @@
     "searchLabel": { "en": "Find a tool", "uk": "Знайти інструмент" },
     "searchPlaceholder": { "en": "Find a tool", "uk": "Знайти інструмент" },
     "navLabel": { "en": "Tools", "uk": "Інструменти" },
+    "tileGrid": { "en": "Tool tiles", "uk": "Плитки інструментів" },
+    "dropZone": { "en": "Drop a log or parameter file", "uk": "Відпустіть журнал або файл параметрів" },
     "allTools": { "en": "All tools", "uk": "Усі інструменти" },
     "aboutBtn": { "en": "About and license", "uk": "Про програму і ліцензія" },
     "langLabel": { "en": "Language", "uk": "Мова" },

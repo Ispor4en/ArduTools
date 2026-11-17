@@ -1,0 +1,1 @@
+Before changing the ArduTools launcher UI, follow `.agents/skills/ui-sdk/SKILL.md` and read `node_modules/@ui-sdk/web/docs/llms.txt`. `@ui-sdk/core` and `@ui-sdk/web` are pinned. The browser bundle is `shell/launcher-ui.js`, rebuilt with `npm run bundle:ui`.

@@ -1,6 +1,6 @@
 {
   "name": "ardutools",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "ArduTools by UnknownTeam — offline Windows desktop app for ArduPilot WebTools.",
   "author": "UnknownTeam",
@@ -15,17 +15,25 @@
     "node": ">=22"
   },
   "scripts": {
+    "bundle:ui": "node scripts/bundle-launcher-ui.mjs",
+    "pretest": "node scripts/bundle-launcher-ui.mjs",
+    "prestart": "node scripts/bundle-launcher-ui.mjs",
     "sync": "node scripts/sync-upstream.mjs",
     "check-upstream": "node scripts/check-upstream.mjs",
     "start": "electron .",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test tests/routing.test.cjs tests/catalog.test.cjs tests/server.test.cjs tests/i18n.test.cjs tests/locale.test.cjs",
+    "test": "node --test tests/routing.test.cjs tests/catalog.test.cjs tests/server.test.cjs tests/i18n.test.cjs tests/locale.test.cjs tests/launcher-a11y.test.mjs",
+    "predist": "node scripts/bundle-launcher-ui.mjs",
     "dist": "electron-builder --win nsis --publish never",
     "dist:dir": "electron-builder --dir"
   },
   "devDependencies": {
+    "@ui-sdk/core": "0.1.0-beta.7",
+    "@ui-sdk/web": "0.1.0-beta.7",
     "electron": "^45.3.2",
     "electron-builder": "^26.18.0",
+    "esbuild": "0.25.12",
+    "jsdom": "27.3.0",
     "png-to-ico": "^3.0.2"
   },
   "build": {
@@ -49,12 +57,16 @@
       {
         "from": "shell",
         "to": "shell",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "shared",
         "to": "shared",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "upstream/WebTools",
@@ -71,7 +83,10 @@
       {
         "from": "vendor",
         "to": "vendor",
-        "filter": ["**/*", "!**/.git/**"]
+        "filter": [
+          "**/*",
+          "!**/.git/**"
+        ]
       },
       {
         "from": "build/icon.png",
@@ -91,7 +106,9 @@
       }
     ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "build/icon.ico",
       "artifactName": "ArduTools-Setup-${version}.${ext}"
     },
@@ -110,7 +127,10 @@
       "installerHeaderIcon": "build/icon.ico",
       "deleteAppDataOnUninstall": false,
       "displayLanguageSelector": true,
-      "installerLanguages": ["en_US", "uk_UA"],
+      "installerLanguages": [
+        "en_US",
+        "uk_UA"
+      ],
       "menuCategory": "ArduTools"
     }
   }

@@ -84,6 +84,18 @@
     }
   }, true)
 
+  if (window.parent !== window) {
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        window.parent.postMessage({ type: 'ardutools-escape' }, location.origin)
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        window.parent.postMessage({ type: 'ardutools-search' }, location.origin)
+      }
+    })
+  }
+
   if (window.parent === window) {
     window.addEventListener('dragover', (event) => {
       if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'

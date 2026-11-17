@@ -1,3 +1,5 @@
+@layer ui-sdk;
+
 /* ArduTools shell. Dark instrument-panel styling for the launcher only.
    Upstream tool pages keep their own layout.
    Copyright (C) 2026 UnknownTeam
@@ -54,7 +56,11 @@ button {
 
 :focus { outline: none; }
 
-:focus-visible {
+:focus-visible,
+[data-slot="listbox-item"][data-highlighted],
+[data-slot="tool-grid-cell"]:focus-visible,
+[data-slot="segmented-control-item"]:focus-visible,
+[data-slot="file-input-dropzone"]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -139,10 +145,13 @@ search { display: block; padding: 8px 14px 12px; }
 
 #search:focus-visible { outline-offset: 0; }
 
-#nav {
+#nav-list {
   overflow: auto;
   padding: 0 10px 12px;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .group-label {
@@ -154,13 +163,13 @@ search { display: block; padding: 8px 14px 12px; }
   text-transform: uppercase;
 }
 
-.nav-btn, .tile {
+.nav-btn, .tile, [data-slot="listbox-item"], [data-slot="tool-grid-cell"] {
   display: flex;
   text-align: left;
   border-radius: 12px;
 }
 
-.nav-btn {
+[data-slot="listbox-item"] {
   width: 100%;
   align-items: center;
   gap: 10px;
@@ -168,11 +177,12 @@ search { display: block; padding: 8px 14px 12px; }
   color: var(--text);
 }
 
-.nav-btn[aria-current="page"], .nav-btn:hover {
+[data-slot="listbox-item"]:hover,
+[data-slot="listbox-item"][aria-selected="true"] {
   background: var(--surface);
 }
 
-.nav-btn[aria-current="page"] { box-shadow: inset 2px 0 0 var(--accent); }
+[data-slot="listbox-item"][aria-selected="true"] { box-shadow: inset 2px 0 0 var(--accent); }
 
 .nav-icon, .tile-icon {
   background: var(--plate);
@@ -203,25 +213,31 @@ search { display: block; padding: 8px 14px 12px; }
   font-size: 0.78rem;
 }
 
-.lang-switch {
+ui-file-input { display: contents; }
+
+#lang-switch {
   display: inline-flex;
+  position: relative;
   margin-bottom: 8px;
   border: 1px solid var(--line);
   border-radius: 999px;
   overflow: hidden;
 }
 
-.lang-switch button {
+[data-slot="segmented-control-item"] {
   min-width: 42px;
   padding: 4px 10px;
   color: var(--muted);
+  border-radius: 999px;
 }
 
-.lang-switch button[aria-pressed="true"] {
+[data-slot="segmented-control-item"][aria-checked="true"] {
   background: var(--accent);
   color: oklch(18% 0.03 190);
   font-weight: 650;
 }
+
+[data-slot="segmented-control-indicator"] { display: none; }
 
 body:not(.i18n-ready) .app,
 body:not(.i18n-ready) .drop,
@@ -301,7 +317,7 @@ body:not(.i18n-ready) dialog {
   gap: 14px;
 }
 
-.tile {
+[data-slot="tool-grid-cell"] {
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
@@ -309,11 +325,12 @@ body:not(.i18n-ready) dialog {
   background: var(--surface);
   border: 1px solid var(--line);
   min-height: 210px;
+  color: var(--text);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .tile { transition: transform 160ms ease, border-color 160ms ease; }
-  .tile:hover { transform: translateY(-2px); border-color: var(--accent-deep); }
+  [data-slot="tool-grid-cell"] { transition: transform 160ms ease, border-color 160ms ease; }
+  [data-slot="tool-grid-cell"]:hover { transform: translateY(-2px); border-color: var(--accent-deep); }
 }
 
 .tile-icon {
@@ -323,12 +340,12 @@ body:not(.i18n-ready) dialog {
   padding: 6px;
 }
 
-.tile h2 {
+[data-slot="tool-grid-cell"] h2 {
   margin: 0;
   font-size: 1.05rem;
 }
 
-.tile p {
+[data-slot="tool-grid-cell"] p {
   margin: 0;
   color: var(--muted);
   display: -webkit-box;
@@ -396,10 +413,13 @@ body:not(.i18n-ready) dialog {
   place-items: center;
   align-content: center;
   background: oklch(12% 0.02 250 / 0.82);
+  visibility: hidden;
   pointer-events: none;
 }
 
-.drop[hidden] { display: none; }
+.drop[data-dragging] {
+  visibility: visible;
+}
 
 .drop p {
   margin: 0;
