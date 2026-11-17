@@ -4,7 +4,7 @@
 
 const routing = window.ArduRouting
 
-const nav = document.getElementById('nav')
+const nav = document.getElementById('nav-list')
 const grid = document.getElementById('tile-grid')
 const search = document.getElementById('search')
 const home = document.getElementById('home')
@@ -14,7 +14,7 @@ const title = document.getElementById('title')
 const subtitle = document.getElementById('subtitle')
 const homeBtn = document.getElementById('home-btn')
 const openBtn = document.getElementById('open-btn')
-const filePicker = document.getElementById('file-picker')
+const shellFiles = document.getElementById('shell-files')
 const drop = document.getElementById('drop')
 const chooser = document.getElementById('chooser')
 const chooserText = document.getElementById('chooser-text')
@@ -32,8 +32,8 @@ let current = null
 let currentLang = 'en'
 let openSeq = 0
 let lastFile = null
-let dragDepth = 0
 let metaInfo = {}
+let painting = false
 
 function t(key, vars) {
   const table = messages && messages.shell && messages.shell[key]
@@ -85,15 +85,21 @@ async function setLanguage(lang) {
 function applyChrome() {
   document.getElementById('skip-link').textContent = t('skip')
   document.getElementById('brand-by').textContent = t('brandBy')
-  document.getElementById('search').setAttribute('aria-label', t('searchLabel'))
-  document.querySelector('label[for="search"]').textContent = t('searchLabel')
+  search.setAttribute('aria-label', t('searchLabel'))
+  document.getElementById('search-label').textContent = t('searchLabel')
   search.placeholder = t('searchPlaceholder')
   nav.setAttribute('aria-label', t('navLabel'))
-  document.getElementById('lang-switch').setAttribute('aria-label', t('langLabel'))
+  document.getElementById('tile-grid').setAttribute('aria-label', t('tileGrid'))
+  document.getElementById('drop').setAttribute('aria-label', t('dropZone'))
+  const langSwitch = document.getElementById('lang-switch')
+  langSwitch.setAttribute('aria-label', t('langLabel'))
   document.getElementById('lang-uk').setAttribute('aria-label', t('langUk'))
-  document.getElementById('lang-uk').setAttribute('aria-pressed', currentLang === 'uk' ? 'true' : 'false')
   document.getElementById('lang-en').setAttribute('aria-label', t('langEn'))
-  document.getElementById('lang-en').setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false')
+  if (langSwitch.value !== currentLang && langSwitch.api) {
+    painting = true
+    langSwitch.api.setValue(currentLang)
+    painting = false
+  }
   document.getElementById('about-btn').textContent = t('aboutBtn')
   openBtn.textContent = t('openFile')
   homeBtn.textContent = t('homeTitle')
@@ -134,6 +140,7 @@ async function boot() {
   groups = catalogBody.groups
   messages = messageBody
   metaInfo = metaBody
+  await Promise.all(['ui-listbox', 'ui-tool-grid', 'ui-segmented-control', 'ui-file-input', 'ui-input'].map((tag) => customElements.whenDefined(tag)))
   currentLang = initial.lang === 'uk' ? 'uk' : 'en'
   document.documentElement.lang = currentLang
   writeLangCookie(currentLang)
@@ -147,32 +154,42 @@ async function boot() {
 }
 
 function render() {
+  painting = true
   const query = search.value.trim().toLowerCase()
-  nav.replaceChildren()
-  grid.replaceChildren()
-  const homeButton = document.createElement('button')
-  homeButton.type = 'button'
-  homeButton.className = 'nav-btn'
-  homeButton.textContent = t('allTools')
-  if (!current) homeButton.setAttribute('aria-current', 'page')
-  homeButton.addEventListener('click', goHome)
-  nav.appendChild(homeButton)
-
-  let shown = 0
+  const shown = []
+  nav.replaceChildren(listItem('home', t('allTools'), null))
   for (const group of groups) {
     const tools = catalog.filter((tool) => tool.group === group.id && matches(tool, query))
     if (!tools.length) continue
-    const label = document.createElement('h2')
+    const groupEl = document.createElement('ui-listbox-group')
+    const label = document.createElement('ui-listbox-group-label')
     label.className = 'group-label'
     label.textContent = groupCopy(group)
-    nav.appendChild(label)
-    for (const tool of tools) {
-      nav.appendChild(navButton(tool))
-      grid.appendChild(tile(tool, shown < 4))
-      shown += 1
-    }
+    groupEl.append(label)
+    for (const tool of tools) groupEl.append(listItem(tool.id, toolCopy(tool, 'name'), tool))
+    nav.append(groupEl)
+    shown.push(...tools)
   }
-  empty.hidden = shown !== 0
+  grid.replaceChildren()
+  shown.forEach((tool, index) => grid.append(tile(tool, index)))
+  empty.hidden = shown.length !== 0
+  const selected = current ? current.id : 'home'
+  if (nav.api && nav.value !== selected) nav.api.setValue(selected)
+  painting = false
+}
+
+function listItem(value, name, tool) {
+  const item = document.createElement('ui-listbox-item')
+  item.setAttribute('value', value)
+  if (tool) item.append(iconImage(tool, 'nav-icon', 28))
+  const copy = document.createElement('span')
+  copy.className = 'nav-copy'
+  const label = document.createElement('span')
+  label.className = 'nav-name'
+  label.textContent = name
+  copy.append(label)
+  item.append(copy)
+  return item
 }
 
 function matches(tool, query) {
@@ -192,44 +209,25 @@ function matches(tool, query) {
   return haystack.includes(query)
 }
 
-function navButton(tool) {
-  const button = document.createElement('button')
-  button.type = 'button'
-  button.className = 'nav-btn'
-  button.dataset.tool = tool.id
-  if (current && current.id === tool.id) button.setAttribute('aria-current', 'page')
-  const icon = iconImage(tool, 'nav-icon', 28)
-  const copy = document.createElement('span')
-  copy.className = 'nav-copy'
-  const name = document.createElement('span')
-  name.className = 'nav-name'
-  name.textContent = toolCopy(tool, 'name')
-  copy.append(name)
-  button.append(icon, copy)
-  button.addEventListener('click', () => openTool(tool.id))
-  return button
-}
-
-function tile(tool, eager) {
-  const button = document.createElement('button')
-  button.type = 'button'
-  button.className = 'tile'
+function tile(tool, index) {
+  const cell = document.createElement('ui-tool-grid-cell')
+  cell.setAttribute('value', tool.id)
+  cell.setAttribute('index', String(index))
   const icon = iconImage(tool, 'tile-icon', 72)
-  if (!eager) icon.loading = 'lazy'
+  if (index >= 4) icon.loading = 'lazy'
   else icon.setAttribute('fetchpriority', 'high')
   const heading = document.createElement('h2')
   heading.textContent = toolCopy(tool, 'name')
   const text = document.createElement('p')
   text.textContent = toolCopy(tool, 'description')
-  button.append(icon, heading, text)
+  cell.append(icon, heading, text)
   if (tool.preview) {
     const badge = document.createElement('span')
     badge.className = 'badge'
     badge.textContent = t('preview')
-    button.append(badge)
+    cell.append(badge)
   }
-  button.addEventListener('click', () => openTool(tool.id))
-  return button
+  return cell
 }
 
 function iconImage(tool, className, size) {
@@ -242,7 +240,7 @@ function iconImage(tool, className, size) {
   return image
 }
 
-function goHome() {
+function goHome(returnId) {
   openSeq += 1
   current = null
   iframe.src = 'about:blank'
@@ -254,6 +252,17 @@ function goHome() {
   homeBtn.disabled = true
   hideChooser()
   render()
+  focusTool(returnId || 'home')
+}
+
+function focusTool(id) {
+  const cell = grid.querySelector(`[value="${CSS.escape(id)}"]`)
+  if (cell && id !== 'home') {
+    cell.focus()
+    return
+  }
+  const item = nav.querySelector(`[value="${CSS.escape(id)}"]`)
+  if (item) item.focus()
 }
 
 async function openTool(id, file) {
@@ -387,7 +396,7 @@ async function routeFile(file) {
 }
 
 function onMenu(command) {
-  if (command === 'open') filePicker.click()
+  if (command === 'open' && shellFiles.api) shellFiles.api.open()
   if (command === 'home') goHome()
   if (command === 'reload') {
     if (current) iframe.contentWindow.location.reload()
@@ -398,15 +407,30 @@ function onMenu(command) {
 search.addEventListener('input', render)
 document.getElementById('search-form').addEventListener('submit', (event) => event.preventDefault())
 homeBtn.addEventListener('click', goHome)
-openBtn.addEventListener('click', () => filePicker.click())
-filePicker.addEventListener('change', () => {
-  const file = filePicker.files && filePicker.files[0]
-  if (file) routeFile(file)
-  filePicker.value = ''
-})
 document.getElementById('chooser-dismiss').addEventListener('click', hideChooser)
-document.getElementById('lang-uk').addEventListener('click', () => setLanguage('uk'))
-document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'))
+document.getElementById('lang-switch').addEventListener('valuechange', (event) => {
+  if (painting) return
+  const next = event.detail && event.detail.value
+  if (next && next !== currentLang) setLanguage(next)
+})
+nav.addEventListener('valuechange', (event) => {
+  if (painting) return
+  const value = event.detail && event.detail.value
+  if (!value || value === (current ? current.id : 'home')) return
+  if (value === 'home') goHome('home')
+  else openTool(value)
+})
+grid.addEventListener('activate', (event) => {
+  const value = event.detail && (event.detail.value || event.detail)
+  if (typeof value === 'string') openTool(value)
+})
+shellFiles.addEventListener('valuechange', (event) => {
+  const added = (event.detail && (event.detail.added || event.detail.value)) || []
+  const files = [...added].map((item) => (item instanceof File ? item : item && item.file)).filter(Boolean)
+  if (files.length > 1) chooseOne(files)
+  else if (files[0]) routeFile(files[0])
+  if (shellFiles.api) shellFiles.api.setValue([])
+})
 document.getElementById('about-btn').addEventListener('click', async () => {
   const notice = document.getElementById('notice-text')
   if (!notice.textContent) {
@@ -420,46 +444,45 @@ window.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'ardutools-external') {
     window.ardutools.openExternal(event.data.url)
   }
+  if (event.data && event.data.type === 'ardutools-escape') onEscape()
+  if (event.data && event.data.type === 'ardutools-search') focusSearch()
 })
 
-window.addEventListener('dragenter', (event) => {
-  if (!hasFiles(event)) return
-  dragDepth += 1
-  drop.hidden = false
-})
-window.addEventListener('dragover', (event) => {
-  if (!hasFiles(event)) return
-  event.preventDefault()
-  drop.hidden = false
-})
-window.addEventListener('dragleave', () => {
-  dragDepth = Math.max(0, dragDepth - 1)
-  if (dragDepth === 0) drop.hidden = true
-})
-window.addEventListener('drop', (event) => {
-  if (!hasFiles(event)) return
-  event.preventDefault()
-  dragDepth = 0
-  drop.hidden = true
-  const files = [...event.dataTransfer.files]
-  const directory = [...event.dataTransfer.items].some((item) => {
-    const entry = item.webkitGetAsEntry && item.webkitGetAsEntry()
-    return entry && entry.isDirectory
-  })
-  if (directory && !files.length) {
-    status.textContent = t('folderHint')
-    openTool('LogFinder')
+window.addEventListener('keydown', (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault()
+    focusSearch()
     return
   }
-  if (files.length > 1) {
-    chooseOne(files)
+  if (event.key === '/' && !isTyping(event.target)) {
+    event.preventDefault()
+    focusSearch()
     return
   }
-  if (files[0]) routeFile(files[0])
+  if (event.key === 'Escape') onEscape()
 })
 
-function hasFiles(event) {
-  return event.dataTransfer && [...event.dataTransfer.types].includes('Files')
+function isTyping(target) {
+  if (!target || target === search) return false
+  const name = target.tagName
+  return name === 'INPUT' || name === 'TEXTAREA' || target.isContentEditable
+}
+
+function focusSearch() {
+  search.focus()
+  search.select()
+}
+
+function onEscape() {
+  if (search.value) {
+    search.value = ''
+    search.dispatchEvent(new Event('input', { bubbles: true }))
+    search.focus()
+    return
+  }
+  if (!current) return
+  const returnId = current.id
+  goHome(returnId)
 }
 
 function chooseOne(files) {

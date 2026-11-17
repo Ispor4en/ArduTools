@@ -28,16 +28,20 @@
       </header>
       <search>
         <form id="search-form" role="search">
-          <label class="sr" for="search">Find a tool</label>
-          <input id="search" type="search" placeholder="Find a tool" autocomplete="off" enterkeyhint="search">
+          <ui-field>
+            <ui-field-label class="sr" id="search-label" for="search">Find a tool</ui-field-label>
+            <ui-input>
+              <input id="search" type="search" placeholder="Find a tool" autocomplete="off" enterkeyhint="search" aria-label="Find a tool">
+            </ui-input>
+          </ui-field>
         </form>
       </search>
-      <nav id="nav" aria-label="Tools"></nav>
+      <ui-listbox id="nav-list" activation="manual" aria-label="Tools"></ui-listbox>
       <footer class="side-foot">
-        <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
-          <button type="button" id="lang-uk" lang="uk" aria-pressed="false">UK</button>
-          <button type="button" id="lang-en" lang="en" aria-pressed="false">EN</button>
-        </div>
+        <ui-segmented-control id="lang-switch" aria-label="Language" value="en">
+          <ui-segmented-control-item id="lang-uk" value="uk">UK</ui-segmented-control-item>
+          <ui-segmented-control-item id="lang-en" value="en">EN</ui-segmented-control-item>
+        </ui-segmented-control>
         <p id="version-line">GPL-3.0</p>
         <button type="button" id="about-btn">About and license</button>
       </footer>
@@ -49,15 +53,23 @@
           <p id="subtitle">Drop a .bin, .log, or .param file anywhere in this window.</p>
         </div>
         <div class="topbar-actions">
-          <button type="button" class="btn primary" id="open-btn">Open file</button>
-          <button type="button" class="btn" id="home-btn" disabled>Home</button>
+          <ui-file-input id="shell-files" multiple accept=".bin,.log,.param,.parm,.tlog,.txt,.json,.mp4,.mov,.webm,.mkv,.avi,.m4v">
+            <ui-file-input-trigger>
+              <ui-button><button type="button" class="btn primary" id="open-btn">Open file</button></ui-button>
+            </ui-file-input-trigger>
+            <ui-file-input-dropzone id="drop" class="drop" target="document" aria-label="Drop a log or parameter file">
+              <p id="drop-title">Drop a log or parameter file</p>
+              <p class="drop-sub">.bin, .log, .tlog, .param</p>
+            </ui-file-input-dropzone>
+          </ui-file-input>
+          <ui-button><button type="button" class="btn" id="home-btn" disabled>Home</button></ui-button>
         </div>
       </div>
       <section id="home" aria-labelledby="title">
         <div class="hero">
           <p class="lede" id="lede">Offline desktop bundle of ArduPilot WebTools. Logs stay on this computer. Tiles marked Preview are the upstream work-in-progress tools.</p>
         </div>
-        <div id="tile-grid" class="tiles"></div>
+        <ui-tool-grid id="tile-grid" class="tiles" aria-label="Tool tiles"></ui-tool-grid>
         <p id="empty" class="empty" hidden>No tools match that search.</p>
       </section>
       <div id="tool-frame" hidden>
@@ -70,11 +82,6 @@
       </div>
     </main>
   </div>
-  <div id="drop" class="drop" hidden>
-    <p id="drop-title">Drop a log or parameter file</p>
-    <p class="drop-sub">.bin, .log, .tlog, .param</p>
-  </div>
-  <input id="file-picker" type="file" hidden accept=".bin,.log,.param,.parm,.tlog,.txt,.json,.mp4,.mov,.webm,.mkv,.avi,.m4v">
   <dialog id="about">
     <h2 id="about-heading">ArduTools by UnknownTeam</h2>
     <p id="about-version"></p>
@@ -89,6 +96,7 @@
     <form method="dialog"><button type="submit" class="btn" id="multi-cancel" value="cancel">Cancel</button></form>
   </dialog>
   <p id="status" class="sr" aria-live="polite"></p>
+  <script src="/__shell/launcher-ui.js"></script>
   <script src="/__shared/routing.js"></script>
   <script src="/__shell/app.js"></script>
 </body>
